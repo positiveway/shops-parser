@@ -2,17 +2,20 @@ import re
 import scrapy
 from scrapy.crawler import CrawlerProcess
 from scrapy.utils.project import get_project_settings
+from scrapy_splash import SplashRequest
 
 
 class TradesySpider(scrapy.Spider):
     name = "tradesy"
-    start_urls = [
-        'https://www.tradesy.com/bags/?brand=louis-vuitton|gucci|chanel|prada|burberry|saint-laurent|givenchy|valentino|celine|versace|proenza-schouler|kate-spade|salvatore-ferragamo|loewe|fendi|alexander-mcqueen|cartier|lanvin|furla|mulberry|bvlgari|anya-hindmarch|miu-miu|goyard|alexander-wang|bottega-veneta|chloe|dior|balenciaga|hermes|michael-kors|dolce-and-gabbana'
-    ]
+
+    def start_requests(self):
+        url = 'https://www.tradesy.com/bags/?brand=louis-vuitton|gucci|chanel|prada|burberry|saint-laurent|givenchy|valentino|celine|versace|proenza-schouler|kate-spade|salvatore-ferragamo|loewe|fendi|alexander-mcqueen|cartier|lanvin|furla|mulberry|bvlgari|anya-hindmarch|miu-miu|goyard|alexander-wang|bottega-veneta|chloe|dior|balenciaga|hermes|michael-kors|dolce-and-gabbana&page={}&num_per_page=192'
+        for page in range(1, 52):
+            yield scrapy.Request(url=url.format(page), callback=self.parse)
 
     def parse(self, response):
         for bag in response.css('a.item-image[href^="/i/"]::attr(href)').extract():
-            yield response.follow(bag, callback=self.parse_bag)
+            yield SplashRequest(response.urljoin(bag), callback=self.parse_bag)
 
     def parse_bag(self, response):
         brand = response.css('#idp-brand > a.tags::text').extract_first()
