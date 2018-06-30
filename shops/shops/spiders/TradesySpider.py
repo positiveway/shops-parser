@@ -15,7 +15,7 @@ class TradesySpider(scrapy.Spider):
         open(self.temp_file, 'w').close()
 
         url = 'https://www.tradesy.com/bags/?brand=louis-vuitton|gucci|chanel|prada|burberry|saint-laurent|givenchy|valentino|celine|versace|proenza-schouler|kate-spade|salvatore-ferragamo|loewe|fendi|alexander-mcqueen|cartier|lanvin|furla|mulberry|bvlgari|anya-hindmarch|miu-miu|goyard|alexander-wang|bottega-veneta|chloe|dior|balenciaga|hermes|michael-kors|dolce-and-gabbana&page={}&num_per_page=192'
-        for page in range(1, 52):
+        for page in range(1, 2):
             yield scrapy.Request(url=url.format(page), callback=self.parse)
 
     def parse(self, response):
@@ -38,8 +38,12 @@ class TradesySpider(scrapy.Spider):
 
         details = response.css('#idp-info > div:nth-child(1) > div.idp-details.idp-info-accordion > div')
 
-        fabric = details.css('div:nth-child(3) > p.small-7.plus-8.columns::text').extract_first()
-        fabric = fabric.strip()
+        fabric = details.xpath(
+            '//*[@id="idp-info"]/div[1]/div[4]/div/div/p[.="Fabric:"]/following-sibling::p/text()').extract_first()
+        try:
+            fabric = fabric.strip()
+        except AttributeError:
+            pass
 
         colors = details.css('div:nth-child(2) > p.small-7.plus-8.columns > a::text').extract()
         colors = list(set(colors))
