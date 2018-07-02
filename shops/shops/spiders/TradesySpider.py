@@ -14,9 +14,17 @@ class TradesySpider(scrapy.Spider):
     def start_requests(self):
         open(self.temp_file, 'w').close()
 
-        url = 'https://www.tradesy.com/bags/?brand=louis-vuitton|gucci|chanel|prada|burberry|saint-laurent|givenchy|valentino|celine|versace|proenza-schouler|kate-spade|salvatore-ferragamo|loewe|fendi|alexander-mcqueen|cartier|lanvin|furla|mulberry|bvlgari|anya-hindmarch|miu-miu|goyard|alexander-wang|bottega-veneta|chloe|dior|balenciaga|hermes|michael-kors|dolce-and-gabbana&page={}&num_per_page=192'
-        for page in range(1, 2):
-            yield scrapy.Request(url=url.format(page), callback=self.parse)
+        brands = ['louis-vuitton', 'gucci', 'chanel', 'prada', 'burberry', 'saint-laurent', 'givenchy', 'valentino',
+                  'celine', 'versace', 'proenza-schouler', 'kate-spade', 'salvatore-ferragamo', 'loewe', 'fendi',
+                  'alexander-mcqueen', 'cartier', 'lanvin', 'furla', 'mulberry', 'bvlgari', 'anya-hindmarch', 'miu-miu',
+                  'goyard', 'alexander-wang', 'bottega-veneta', 'chloe', 'dior', 'balenciaga', 'hermes', 'michael-kors',
+                  'dolce-and-gabbana']
+
+        url = 'https://www.tradesy.com/bags/?brand={}&page={}&num_per_page=192'
+
+        for brand in brands:
+            for page in range(1, 2):
+                yield scrapy.Request(url=url.format(brand, page), callback=self.parse)
 
     def parse(self, response):
         for bag in response.css('a.item-image[href^="/i/"]::attr(href)').extract():
@@ -38,8 +46,7 @@ class TradesySpider(scrapy.Spider):
 
         details = response.css('#idp-info > div:nth-child(1) > div.idp-details.idp-info-accordion > div')
 
-        fabric = details.xpath(
-            '//*[@id="idp-info"]/div[1]/div[4]/div/div/p[.="Fabric:"]/following-sibling::p/text()').extract_first()
+        fabric = details.xpath('//div/p[.="Fabric:"]/following-sibling::p/text()').extract_first()
         try:
             fabric = fabric.strip()
         except AttributeError:
