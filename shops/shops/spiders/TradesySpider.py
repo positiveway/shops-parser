@@ -23,7 +23,7 @@ class TradesySpider(scrapy.Spider):
         url = 'https://www.tradesy.com/bags/?brand={}&page={}&num_per_page=192'
 
         for brand in brands:
-            for page in range(1, 2):
+            for page in range(1, 52):
                 yield scrapy.Request(url=url.format(brand, page), callback=self.parse)
 
     def parse(self, response):
