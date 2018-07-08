@@ -12,7 +12,7 @@ class TradesySpider(scrapy.Spider):
     temp_file = 'Bags.csv'
 
     def start_requests(self):
-        open(self.temp_file, 'w').close()
+        open(self.temp_file, 'a+').close()
 
         brands = ['louis-vuitton', 'gucci', 'chanel', 'prada', 'burberry', 'saint-laurent', 'givenchy', 'valentino',
                   'celine', 'versace', 'proenza-schouler', 'kate-spade', 'salvatore-ferragamo', 'loewe', 'fendi',
