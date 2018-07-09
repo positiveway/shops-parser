@@ -14,7 +14,6 @@ BOT_NAME = 'shops'
 SPIDER_MODULES = ['shops.spiders']
 NEWSPIDER_MODULE = 'shops.spiders'
 
-FEED_URI = 'Bags.csv'
 FEED_FORMAT = 'csv'
 # FEED_EXPORT_INDENT = 2
 

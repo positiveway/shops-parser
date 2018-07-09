@@ -1,7 +1,9 @@
 import re
 
 import os
-import pandas
+from glob import glob
+
+import pandas as pd
 import scrapy
 from scrapy.crawler import CrawlerProcess
 from scrapy.utils.project import get_project_settings
@@ -9,10 +11,14 @@ from scrapy.utils.project import get_project_settings
 
 class TradesySpider(scrapy.Spider):
     name = "tradesy"
-    temp_file = 'Bags.csv'
+    temp_file = 'tradesy.csv'
+
+    custom_settings = {
+        'FEED_URI': temp_file,
+    }
 
     def start_requests(self):
-        open(self.temp_file, 'a+').close()
+        open(self.temp_file, 'w').close()
 
         brands = ['louis-vuitton', 'gucci', 'chanel', 'prada', 'burberry', 'saint-laurent', 'givenchy', 'valentino',
                   'celine', 'versace', 'proenza-schouler', 'kate-spade', 'salvatore-ferragamo', 'loewe', 'fendi',
@@ -22,8 +28,8 @@ class TradesySpider(scrapy.Spider):
 
         url = 'https://www.tradesy.com/bags/?brand={}&page={}&num_per_page=192'
 
-        for brand in brands:
-            for page in range(1, 52):
+        for brand in brands[1]:  # FIXME
+            for page in range(1, 2):  # FIXME
                 yield scrapy.Request(url=url.format(brand, page), callback=self.parse)
 
     def parse(self, response):
@@ -80,7 +86,18 @@ class TradesySpider(scrapy.Spider):
         }
 
     def closed(self, reason):
-        pandas.read_csv(self.temp_file).to_excel(self.temp_file.replace('csv', 'xlsx'))
+        excel_file = 'bags.xlsx'
+
+        csv_df = pd.read_csv(self.temp_file)
+
+        try:
+            excel_df = pd.read_excel(excel_file)
+        except FileNotFoundError:
+            combined_df = csv_df
+        else:
+            combined_df = pd.concat([excel_df, csv_df])
+
+        combined_df.to_excel(excel_file)
 
         os.remove(self.temp_file)
 
