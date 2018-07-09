@@ -1,7 +1,6 @@
 import re
 
 import os
-from glob import glob
 
 import pandas as pd
 import scrapy
@@ -28,8 +27,8 @@ class TradesySpider(scrapy.Spider):
 
         url = 'https://www.tradesy.com/bags/?brand={}&page={}&num_per_page=192'
 
-        for brand in brands[1]:  # FIXME
-            for page in range(1, 2):  # FIXME
+        for brand in brands:
+            for page in range(1, 52):
                 yield scrapy.Request(url=url.format(brand, page), callback=self.parse)
 
     def parse(self, response):
@@ -86,7 +85,7 @@ class TradesySpider(scrapy.Spider):
         }
 
     def closed(self, reason):
-        excel_file = 'bags.xlsx'
+        excel_file = 'Bags.xlsx'
 
         csv_df = pd.read_csv(self.temp_file)
 

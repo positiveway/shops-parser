@@ -19,15 +19,22 @@ class EbaySpider(scrapy.Spider):
     def start_requests(self):
         open(self.temp_file, 'w').close()
 
-        url = 'https://www.ebay.com/sch/Women-s-Handbags-and-Bags/169291/i.html?_fsrp=1&Brand=Alexander%2520McQueen%7CAlexander%2520Wang%7CAnya%2520Hindmarch%7CBalenciaga%7CBottega%2520Veneta%7CBurberry%7CBvlgari%7CCartier%7CC%25C3%2589LINE%7CCHANEL%7CChlo%25C3%25A9%7CDior%7CDolce%2526Gabbana%7CFendi%7CFurla%7CGivenchy%7CGoyard%7CGucci%7CHERM%25C3%2588S%7Ckate%2520spade%2520new%2520york%7CLanvin%7CLoewe%7CLouis%2520Vuitton%7CMichael%2520Kors%7CMiu%2520Miu%7CMulberry%7CPRADA%7CProenza%2520Schouler%7CSalvatore%2520Ferragamo%7Cvalentino%7CVersace&_sacat=169291&_dcat=169291&_ipg=200'
+        brands = ['Alexander%2520McQueen', 'Alexander%2520Wang', 'Anya%2520Hindmarch', 'Balenciaga',
+                  'Bottega%2520Veneta', 'Burberry', 'Bvlgari', 'Cartier', 'C%25C3%2589LINE', 'CHANEL', 'Chlo%25C3%25A9',
+                  'Dior', 'Dolce%2526Gabbana', 'Fendi', 'Furla', 'Givenchy', 'Goyard', 'Gucci', 'HERM%25C3%2588S',
+                  'kate%2520spade%2520new%2520york', 'Lanvin', 'Loewe', 'Louis%2520Vuitton', 'Michael%2520Kors',
+                  'Miu%2520Miu', 'Mulberry', 'PRADA', 'Proenza%2520Schouler', 'Salvatore%2520Ferragamo', 'valentino',
+                  'Versace']
 
-        yield scrapy.Request(url=url, callback=self.parse)
+        url = 'https://www.ebay.com/sch/Women-s-Handbags-and-Bags/169291/i.html?_fsrp=1&Brand={}&_sacat=169291&_dcat=169291&_ipg=200'
+
+        for brand in brands:
+            yield scrapy.Request(url=url.format(brand), callback=self.parse)
 
     def parse(self, response):
-        # FIXME
-        # next_page = response.css(
-        #     '#srp-river-results-SEARCH_PAGINATION_MODEL_V2 > div.s-pagination > nav > a:nth-child(4)::attr(href)').extract_first()
-        # response.follow(next_page)
+        next_page = response.css(
+            '#srp-river-results-SEARCH_PAGINATION_MODEL_V2 > div.s-pagination > nav > a:nth-child(4)::attr(href)').extract_first()
+        yield response.follow(next_page)
 
         for bag_link in response.css('div > div.s-item__info.clearfix > a::attr(href)').extract():
             yield response.follow(bag_link, callback=self.parse_bag)
@@ -81,7 +88,7 @@ class EbaySpider(scrapy.Spider):
         }
 
     def closed(self, reason):
-        excel_file = 'bags.xlsx'
+        excel_file = 'Bags.xlsx'
 
         csv_df = pd.read_csv(self.temp_file)
 
