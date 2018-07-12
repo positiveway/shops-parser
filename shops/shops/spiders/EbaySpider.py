@@ -10,32 +10,41 @@ class EbaySpider(scrapy.Spider):
         'FEED_URI': temp_file,
     }
 
+    brands = ['Alexander%2520McQueen', 'Alexander%2520Wang', 'Anya%2520Hindmarch', 'Balenciaga',
+              'Bottega%2520Veneta', 'Burberry', 'Bvlgari', 'Cartier', 'C%25C3%2589LINE', 'CHANEL', 'Chlo%25C3%25A9',
+              'Dior', 'Dolce%2526Gabbana', 'Fendi', 'Furla', 'Givenchy', 'Goyard', 'Gucci', 'HERM%25C3%2588S',
+              'kate%2520spade%2520new%2520york', 'Lanvin', 'Loewe', 'Louis%2520Vuitton', 'Michael%2520Kors',
+              'Miu%2520Miu', 'Mulberry', 'PRADA', 'Proenza%2520Schouler', 'Salvatore%2520Ferragamo', 'valentino',
+              'Versace']
+
+    last_brand_page = {brand: '' for brand in brands}
+
     def start_requests(self):
         open(self.temp_file, 'w').close()
 
-        brands = ['Alexander%2520McQueen', 'Alexander%2520Wang', 'Anya%2520Hindmarch', 'Balenciaga',
-                  'Bottega%2520Veneta', 'Burberry', 'Bvlgari', 'Cartier', 'C%25C3%2589LINE', 'CHANEL', 'Chlo%25C3%25A9',
-                  'Dior', 'Dolce%2526Gabbana', 'Fendi', 'Furla', 'Givenchy', 'Goyard', 'Gucci', 'HERM%25C3%2588S',
-                  'kate%2520spade%2520new%2520york', 'Lanvin', 'Loewe', 'Louis%2520Vuitton', 'Michael%2520Kors',
-                  'Miu%2520Miu', 'Mulberry', 'PRADA', 'Proenza%2520Schouler', 'Salvatore%2520Ferragamo', 'valentino',
-                  'Versace']
-
         url = 'https://www.ebay.com/sch/Women-s-Handbags-and-Bags/169291/i.html?_fsrp=1&Brand={}&_sacat=169291&_dcat=169291&_ipg=200'
 
-        for brand in brands:
-            yield scrapy.Request(url=url.format(brand), callback=self.parse)
+        for brand in self.brands:
+            request = scrapy.Request(url=url.format(brand), callback=self.parse)
+            request.meta['brand'] = brand
+            yield request
 
     def parse(self, response):
-        page_with_items = False
+        brand = response.meta['brand']
+
+        next_page = response.css(
+            '#srp-river-results-SEARCH_PAGINATION_MODEL_V2 > div.s-pagination > nav > a:nth-child(4)::attr(href)').extract_first()
+        next_page = response.urljoin(next_page)
+
+        if next_page != self.last_brand_page[brand]:
+            self.last_brand_page[brand] = next_page
+
+            request = scrapy.Request(url=next_page, callback=self.parse)
+            request.meta['brand'] = brand
+            yield request
 
         for bag_link in response.css('div > div.s-item__info.clearfix > a::attr(href)').extract():
-            page_with_items = True
             yield response.follow(bag_link, callback=self.parse_bag)
-
-        if page_with_items:
-            next_page = response.css(
-                '#srp-river-results-SEARCH_PAGINATION_MODEL_V2 > div.s-pagination > nav > a:nth-child(4)::attr(href)').extract_first()
-            yield response.follow(next_page)
 
     def parse_bag(self, response):
         condition = response.css('#vi-itm-cond::text').extract_first()

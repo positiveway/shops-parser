@@ -15,12 +15,12 @@ from shops.spiders.TradesySpider import TradesySpider
 
 def main():
     process = CrawlerProcess(get_project_settings())
-    # process.crawl(TradesySpider)
     process.crawl(EbaySpider)
+    process.crawl(TradesySpider)
     process.start()
 
-    csv_files = [EbaySpider.temp_file, TradesySpider.temp_file]
-    combined = pd.concat([pd.read_csv(f) for f in csv_files])
+    csv_files = [pd.read_csv(f) for f in [EbaySpider.temp_file, TradesySpider.temp_file]]
+    combined = pd.concat(csv_files, ignore_index=True, sort=False)
     combined.to_excel('Bags.xlsx')
 
 
