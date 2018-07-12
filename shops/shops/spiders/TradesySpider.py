@@ -19,11 +19,11 @@ class TradesySpider(scrapy.Spider):
                   'goyard', 'alexander-wang', 'bottega-veneta', 'chloe', 'dior', 'balenciaga', 'hermes', 'michael-kors',
                   'dolce-and-gabbana']
 
-        url = 'https://www.tradesy.com/bags/?brand={}&page={}&num_per_page=192'
+        url = 'https://www.tradesy.com/bags/?brand={brand}%7C{brand}&page={page}&num_per_page=192'
 
         for brand in brands:
             for page in range(1, 52):
-                yield scrapy.Request(url=url.format(brand, page), callback=self.parse)
+                yield scrapy.Request(url=url.format(brand=brand, page=page), callback=self.parse)
 
     def parse(self, response):
         for bag in response.css('a.item-image[href^="/i/"]::attr(href)').extract():
@@ -36,7 +36,8 @@ class TradesySpider(scrapy.Spider):
         model = model.strip()
 
         size = response.css('#idp-size-id > span.item-size::text').extract_first()
-        size = size.strip()
+        if size:
+            size = size.strip()
 
         price = response.css('#idp-price > div.idp-price-wrapper > div > div.item-price::text').extract_first()
         price = re.search('[.,\d]+', price).group(0)
