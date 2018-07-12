@@ -1,11 +1,5 @@
 import re
-
-import os
-
-import pandas as pd
 import scrapy
-from scrapy.crawler import CrawlerProcess
-from scrapy.utils.project import get_project_settings
 
 
 class TradesySpider(scrapy.Spider):
@@ -83,25 +77,3 @@ class TradesySpider(scrapy.Spider):
             'Style Tags': tags,
             'url': response.url,
         }
-
-    def closed(self, reason):
-        excel_file = 'Bags.xlsx'
-
-        csv_df = pd.read_csv(self.temp_file)
-
-        try:
-            excel_df = pd.read_excel(excel_file)
-        except FileNotFoundError:
-            combined_df = csv_df
-        else:
-            combined_df = pd.concat([excel_df, csv_df])
-
-        combined_df.to_excel(excel_file)
-
-        os.remove(self.temp_file)
-
-
-if __name__ == '__main__':
-    process = CrawlerProcess(get_project_settings())
-    process.crawl(TradesySpider)
-    process.start()

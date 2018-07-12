@@ -1,11 +1,5 @@
 import re
-
-import os
-
-import pandas as pd
 import scrapy
-from scrapy.crawler import CrawlerProcess
-from scrapy.utils.project import get_project_settings
 
 
 class EbaySpider(scrapy.Spider):
@@ -32,12 +26,16 @@ class EbaySpider(scrapy.Spider):
             yield scrapy.Request(url=url.format(brand), callback=self.parse)
 
     def parse(self, response):
-        next_page = response.css(
-            '#srp-river-results-SEARCH_PAGINATION_MODEL_V2 > div.s-pagination > nav > a:nth-child(4)::attr(href)').extract_first()
-        yield response.follow(next_page)
+        page_with_items = False
 
         for bag_link in response.css('div > div.s-item__info.clearfix > a::attr(href)').extract():
+            page_with_items = True
             yield response.follow(bag_link, callback=self.parse_bag)
+
+        if page_with_items:
+            next_page = response.css(
+                '#srp-river-results-SEARCH_PAGINATION_MODEL_V2 > div.s-pagination > nav > a:nth-child(4)::attr(href)').extract_first()
+            yield response.follow(next_page)
 
     def parse_bag(self, response):
         condition = response.css('#vi-itm-cond::text').extract_first()
@@ -68,7 +66,7 @@ class EbaySpider(scrapy.Spider):
 
         size = None
         if length and height and depth:
-            size = '{}" {}" {}"'.format(length, height, depth)
+            size = '{}" x {}" x {}"'.format(length, height, depth)
 
         price = response.xpath('//*[@itemprop="price"]/@content').extract_first()
         model = response.css('#itemTitle::text').extract_first()
@@ -86,25 +84,3 @@ class EbaySpider(scrapy.Spider):
             'Style Tags': None,
             'url': response.url,
         }
-
-    def closed(self, reason):
-        excel_file = 'Bags.xlsx'
-
-        csv_df = pd.read_csv(self.temp_file)
-
-        try:
-            excel_df = pd.read_excel(excel_file)
-        except FileNotFoundError:
-            combined_df = csv_df
-        else:
-            combined_df = pd.concat([excel_df, csv_df])
-
-        combined_df.to_excel(excel_file)
-
-        os.remove(self.temp_file)
-
-
-if __name__ == '__main__':
-    process = CrawlerProcess(get_project_settings())
-    process.crawl(EbaySpider)
-    process.start()
