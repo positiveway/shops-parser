@@ -21,7 +21,7 @@ def main():
 
     csv_files = [pd.read_csv(f) for f in [EbaySpider.temp_file, TradesySpider.temp_file]]
     combined = pd.concat(csv_files, ignore_index=True, sort=False)
-    combined.to_excel('Bags.xlsx')
+    combined.to_excel('Bags.xlsx', index=False)
 
 
 if __name__ == '__main__':
