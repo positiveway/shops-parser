@@ -30,4 +30,4 @@
 1. Run script
    - `python3 run.py`
 1. Scraping will take a couple of hours
-1. When scraping is done `Bags.xlsx` will be updated with new data
+1. When scraping is done `Bags.xlsx` will be updated with a new data
