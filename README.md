@@ -17,7 +17,7 @@
 1. Install Microsoft Build Tools ([link](https://www.microsoft.com/en-us/download/details.aspx?id=48159&ranMID=24542&ranEAID=je6NUbpObpQ&ranSiteID=je6NUbpObpQ-ssahJLOBHslxW96rArFYOQ&epi=je6NUbpObpQ-ssahJLOBHslxW96rArFYOQ&irgwc=1&OCID=AID681541_aff_7593_1243925&tduid=(ir_w8F3Uex8PV0Mzu7UEdzN2ycQUkjVBxU5XxduzU0)(7593)(1243925)(je6NUbpObpQ-ssahJLOBHslxW96rArFYOQ)()&irclickid=w8F3Uex8PV0Mzu7UEdzN2ycQUkjVBxU5XxduzU0))
 1. Install project's dependencies. In CMD type in:
    - `pip install -r requirements.txt`
-   - Check output carefully, there have to be **no errors**, all commands have to be executed **succesfully**
+   - Check output carefully, there have to be **no errors**, all commands have to be executed **successfully**
    - Installation will take a while
 
 ## Launch
