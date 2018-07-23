@@ -3,21 +3,22 @@
 ## Installation
 1. Download Python 3.6 ([link](https://www.python.org/downloads/windows/))
 
-1. Open CMD
-   - Press `Win` + `R`
-   - Type in: `cmd.exe`
+1. Download and install Microsoft Build Tools ([link](https://www.microsoft.com/en-us/download/details.aspx?id=48159&ranMID=24542&ranEAID=je6NUbpObpQ&ranSiteID=je6NUbpObpQ-ssahJLOBHslxW96rArFYOQ&epi=je6NUbpObpQ-ssahJLOBHslxW96rArFYOQ&irgwc=1&OCID=AID681541_aff_7593_1243925&tduid=(ir_w8F3Uex8PV0Mzu7UEdzN2ycQUkjVBxU5XxduzU0)(7593)(1243925)(je6NUbpObpQ-ssahJLOBHslxW96rArFYOQ)()&irclickid=w8F3Uex8PV0Mzu7UEdzN2ycQUkjVBxU5XxduzU0))
+
 1. Download project from GitHub
 1. Unpack it
 1. Create folder where libraries and dependencies will be installed
    - For example: `C:\scraping`
-1. Move to that folder in CMD:
+1. Open CMD
+   - Press `Win` + `R`
+   - Type in: `cmd.exe`
+1. Move to your libraries folder in CMD:
    - Type in: `cd /d C:\scraping`
    - If you created folder with different name, enter path to it instead of `C:\scraping`
 1. Install virtual environment, type in: 
    - `virtualenv venv`
    - `venv\Scripts\activate`
-1. Download and install Microsoft Build Tools ([link](https://www.microsoft.com/en-us/download/details.aspx?id=48159&ranMID=24542&ranEAID=je6NUbpObpQ&ranSiteID=je6NUbpObpQ-ssahJLOBHslxW96rArFYOQ&epi=je6NUbpObpQ-ssahJLOBHslxW96rArFYOQ&irgwc=1&OCID=AID681541_aff_7593_1243925&tduid=(ir_w8F3Uex8PV0Mzu7UEdzN2ycQUkjVBxU5XxduzU0)(7593)(1243925)(je6NUbpObpQ-ssahJLOBHslxW96rArFYOQ)()&irclickid=w8F3Uex8PV0Mzu7UEdzN2ycQUkjVBxU5XxduzU0))
-1. Install `win32api` library, enter in CMD:
+1. Install `win32api` library, enter:
    - `pip install pypiwin32`
 1. Install project's dependencies:
    - `pip install -r requirements.txt`
