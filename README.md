@@ -20,6 +20,10 @@
    - `venv\Scripts\activate`
 1. Install `win32api` library, enter:
    - `pip install pypiwin32`
+1. Move to folder where you unpacked the project:
+   - If folder of upacked project is `D:\shops-scraper-master`, enter: `cd /d D:\shops-scraper-master`
+   - `D:\shops-scraper-master` is just a template
+   - Enter the real path to folder, where you unpacked the project, instead of it
 1. Install project's dependencies:
    - `pip install -r requirements.txt`
    - Check output carefully, there have to be **no errors**, all commands have to be executed **successfully**
@@ -34,8 +38,6 @@
    - `venv\Scripts\activate`
 1. Move to `shops` subdirectory of project folder
    - If folder of upacked project is `D:\shops-scraper-master`, enter: `cd /d D:\shops-scraper-master\shops`
-   - `D:\shops-scraper-master` is just a template
-   - Enter real path, where you unpacked the project, instead of it
 1. Run script
    - `python3 run.py`
 1. Scraping will take many of hours
