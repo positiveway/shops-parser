@@ -2,6 +2,7 @@
 
 ## Installation
 1. Download Python 3.6 ([link](https://www.python.org/downloads/windows/))
+
 1. Open CMD
    - Press `Win` + `R`
    - Type in: `cmd.exe`
@@ -25,6 +26,7 @@
 
 ## Launch
 1. Open CMD
+
 1. Move to your libraries folder
    - For example: `cd /d C:\scraping`
 1. Activate virtual environment
