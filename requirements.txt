@@ -10,7 +10,7 @@ hyperlink==18.0.0
 idna==2.7
 incremental==17.5.0
 jdcal==1.4
-lxml==4.2.3
+lxml==4.6.5
 numpy==1.14.5
 openpyxl==2.5.4
 pandas==0.23.1
